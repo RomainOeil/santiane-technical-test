@@ -1,4 +1,5 @@
 <?php
+    require __DIR__ . '/etape.php';
     $user = 'root';
     $pass = 'root';
 
@@ -11,7 +12,7 @@
 
     session_start();
 
-    function getVoyageId() {
+/*    function getVoyageIdFromSession() {
         try {
             $voyage_id = 0;
             global $db;
@@ -22,9 +23,9 @@
             echo "Error :" . $e->getMessage() . "<br/>";
             die;
         }
-    }
+    }*/
 
-    $voyage_id = getVoyageId();
+    $voyage_id = getVoyageIdFromSession();
 
     function alreadyPassedIn($column) {
         try {

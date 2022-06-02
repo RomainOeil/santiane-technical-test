@@ -19,7 +19,10 @@ First push:
     Database created and filled with exemples data using the website.
     Core features created.
 
+Second push:
+    Added stops sort by departure/arrival
+
 Todo:
-    Additionnal features like removing journeys/stops and sorting.
+    Additionnal features like removing journeys/stops.
     Graphical improvements.
     Warning when journey not fully completed

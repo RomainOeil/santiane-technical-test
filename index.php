@@ -10,17 +10,46 @@
         die;
     }
 
-    function voyagePrint() {
-        global $db;
-        $get_voyage = 'SELECT * FROM voyage';
-        foreach ($db->query($get_voyage) as $row) {
-            $name = $row['name'];
-            echo '<form action="etape.php" method="post">';
-            echo '<input type="submit" name="name" id="test" value="' . $name . '">';
-            echo '<br/>';
-            echo '</form>';
+    session_start();
+
+    function getVoyageIdFromName() {
+        try {
+            $voyage_id = 0;
+            global $db;
+            $get_voyage = 'SELECT * FROM voyage WHERE name = "' . $_SESSION['voyage_name'] . '"';
+            $voyage_id = $db->query($get_voyage)->fetch()['id'];
+            return $voyage_id;
+        } catch (PDOException $e) {
+            echo "Error :" . $e->getMessage() . "<br/>";
+            die;
         }
     }
+
+    function findFirstStop($voyage_name) {
+
+    }
+
+    function voyageFull() {
+        global $db;
+    }
+
+    function voyagePrint() {
+        try {
+            global $db;
+            $get_voyage = 'SELECT * FROM voyage';
+            foreach ($db->query($get_voyage) as $row) {
+               $name = $row['name'];
+               echo '<form action="etape.php" method="post">';
+               echo '<input type="submit" name="name" id="test" value="' . $name . '">';
+               echo '<br/>';
+               echo '</form>';
+            }
+        } catch (PDOException $e) {
+           echo "Erreur :" . $e->getMessage() . "<br/>";
+           die;
+    }
+    }
+
 ?>
 <html>
     <head>

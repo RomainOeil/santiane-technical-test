@@ -14,7 +14,7 @@
         $_SESSION['voyage_name'] = $_POST['name'];
     }
 
-    function getVoyageId() {
+    function getVoyageIdFromSession() {
         try {
             $voyage_id = 0;
             global $db;
@@ -27,13 +27,108 @@
         }
     }
 
-    $voyage_id = getVoyageId();
+    $voyage_id = getVoyageIdFromSession();
+
+    $etape_array = array();
+
+    function GetPDORowsCount($command) {
+        global $db;
+        $result = $db->query($command);
+        $count = $result->fetchColumn();
+        return $count;
+    }
+
+    function PrintEtapeArray() {
+        global $etape_array;
+        echo '<table>';
+        echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . '</caption>';
+        echo '<tr>';
+        echo '<th>Type of transport</th>';
+        echo '<th>Number of the transport</th>';
+        echo '<th>Place of departure</th>';
+        echo '<th>Place of arrival</th>';
+        echo '<th>Number of the seat</th>';
+        echo '<th>Gate</th>';
+        echo '<th>Number of the baggage</th>';
+        echo '</tr>';
+        foreach ($etape_array as $etape) {
+            echo '<tr>';
+            echo '<td>' . $etape['type'] . '</td><td>' . $etape['number'] . '</td><td>'
+            . $etape['departure'] . '</td><td>' . $etape['arrival'] . '</td><td>' . $etape['seat'] .
+            '</td><td>' . $etape['gate'] . '</td><td>' . $etape['baggage_drop'] . '</td>';
+            echo '</tr>';
+        }
+    }
+
+    function EtapeIsIn($column, $etape_id, $name, $etape_list) {
+        try {
+            global $db, $voyage_id;
+/*            echo 'Column : ' . $column . '<br/>';
+            echo 'Name : ' . $name . '<br/>';
+            echo 'Etape id : ' . $etape_id . '<br/>';*/
+            $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id;
+            $loop_list = $db->query($get_etape);
+            $found = false;
+            foreach ($loop_list as $etape) {
+                if ($etape[$column] == $name) {
+                    if ($found) {
+                        echo 'The '. $column . ' is already in the database <br/>';
+                    } else {
+                        $found = true;
+                    }
+                }
+            }
+            if ($found) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "Error :" . $e->getMessage() . "<br/>";
+            die;
+        }
+    }
+
+    function getFirstEtape($etape_list) {
+        try {
+            global $etape_array;
+            $first_etape = [];
+            $first_found = false;
+            foreach ($etape_list as $row) {
+                $is_found = EtapeIsIn('arrival', $row['id'], $row['departure'], $etape_list);
+                if (!$is_found && !$first_found) {
+                    $first_found = true;
+                    $first_etape = $row;
+                } else if (!$is_found && $first_found) {
+                    echo 'First stop already found<br/>';
+                    die;
+                }
+            }
+            $etape_array[] = $first_etape;
+            return $first_etape;
+        } catch (PDOException $e) {
+            echo "Error :" . $e->getMessage() . "<br/>";
+            die;
+        }
+    }
 
     function etapeSort() {
         try {
-            global $db, $voyage_id;
+            global $db, $voyage_id, $etape_array;
             $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id;
             $etape_list = $db->query($get_etape);
+            $first_etape = getFirstEtape($etape_list);
+            $current_arrival = $first_etape['arrival'];
+            $lenght = GetPDORowsCount('SELECT count(*) FROM etape WHERE voyage_id = ' . $voyage_id);
+            for ($l = 1; $l < $lenght; $l++) {
+                $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id . ' AND departure = "' . $current_arrival . '"';
+                $etape_list = $db->query($get_etape);
+                foreach ($etape_list as $row) {
+                   $etape_array[] = $row;
+                }
+                $current_arrival = $row['arrival'];
+            }
+            PrintEtapeArray();
         } catch (PDOException $e) {
             echo "Error :" . $e->getMessage() . "<br/>";
             die;
@@ -57,7 +152,7 @@
             echo '<th>Place of arrival</th>';
             echo '<th>Number of the seat</th>';
             echo '<th>Gate</th>';
-            Echo '<th>Number of the baggage</th>';
+            echo '<th>Number of the baggage</th>';
             echo '</tr>';
             foreach ($db->query($get_etape) as $row) {
                 echo '<tr>';
@@ -82,8 +177,9 @@
     <body>
 
         <?php
-            etapePrint();
+            etapeSort();
         ?>
+
         <p><br/></p>
         <form method="post" action="etape_added.php">
             <fieldset>
