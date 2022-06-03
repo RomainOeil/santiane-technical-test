@@ -38,10 +38,20 @@
         return $count;
     }
 
+    function deleteSelectedEtape($selected_id) {
+        global $db;
+        foreach ($selected_id as $id) {
+            $delete_etape = 'DELETE FROM etape WHERE id = ' . $id;
+            $db->query($delete_etape);
+        }
+        header("Refresh:0");
+    }
+
     function PrintEtapeArray() {
         global $etape_array;
+        echo '<form method="post" id="etape_tab" action="etape.php">';
         echo '<table>';
-        echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . '</caption>';
+        echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . ' sorted from first to last stop</caption>';
         echo '<tr>';
         echo '<th>Type of transport</th>';
         echo '<th>Number of the transport</th>';
@@ -50,22 +60,26 @@
         echo '<th>Number of the seat</th>';
         echo '<th>Gate</th>';
         echo '<th>Number of the baggage</th>';
+        echo '<th>Delete?</th>';
         echo '</tr>';
         foreach ($etape_array as $etape) {
             echo '<tr>';
             echo '<td>' . $etape['type'] . '</td><td>' . $etape['number'] . '</td><td>'
             . $etape['departure'] . '</td><td>' . $etape['arrival'] . '</td><td>' . $etape['seat'] .
-            '</td><td>' . $etape['gate'] . '</td><td>' . $etape['baggage_drop'] . '</td>';
+            '</td><td>' . $etape['gate'] . '</td><td>' . $etape['baggage_drop'] . '</td><td>' . '<input type="checkbox" name="delete_etape[]" value="' . $etape['id'] . '">' . '</td>';
             echo '</tr>';
+        }
+        echo '</table>';
+        echo '<input type="submit" name="delete_selected" value="Delete selected etapes">';
+        echo '</form>';
+        if (isset($_POST['delete_etape'])) {
+            deleteSelectedEtape($_POST['delete_etape']);
         }
     }
 
     function EtapeIsIn($column, $etape_id, $name, $etape_list) {
         try {
             global $db, $voyage_id;
-/*            echo 'Column : ' . $column . '<br/>';
-            echo 'Name : ' . $name . '<br/>';
-            echo 'Etape id : ' . $etape_id . '<br/>';*/
             $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id;
             $loop_list = $db->query($get_etape);
             $found = false;
@@ -101,7 +115,8 @@
                     $first_etape = $row;
                 } else if (!$is_found && $first_found) {
                     echo 'First stop already found<br/>';
-                    die;
+                    echo 'Please verify that the journey is correct<br/>';
+                    return false;
                 }
             }
             $etape_array[] = $first_etape;
@@ -118,6 +133,9 @@
             $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id;
             $etape_list = $db->query($get_etape);
             $first_etape = getFirstEtape($etape_list);
+            if (!$first_etape) {
+                return false;
+            }
             $current_arrival = $first_etape['arrival'];
             $lenght = GetPDORowsCount('SELECT count(*) FROM etape WHERE voyage_id = ' . $voyage_id);
             for ($l = 1; $l < $lenght; $l++) {
@@ -129,6 +147,7 @@
                 $current_arrival = $row['arrival'];
             }
             PrintEtapeArray();
+            return true;
         } catch (PDOException $e) {
             echo "Error :" . $e->getMessage() . "<br/>";
             die;
@@ -144,7 +163,7 @@
             }
             $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id;
             echo '<table>';
-            echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . '</caption>';
+            echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . 'unsorted</caption>';
             echo '<tr>';
             echo '<th>Type of transport</th>';
             echo '<th>Number of the transport</th>';
@@ -168,6 +187,26 @@
         }
     }
 
+    function purposeDeleteJourney() {
+        global $db, $voyage_id;
+        echo '<form method="post">';
+        echo '<input type="submit" name="delete_journey" value="Delete journey">';
+        echo '</form>';
+        if (isset($_POST['delete_journey'])) {
+            echo '<form method="post">';
+            echo '<input type="submit" name="confirm_delete_journey" value="Confirm delete journey">';
+            echo '</form>';
+        }
+        if (isset($_POST['confirm_delete_journey'])){
+            $delete_voyage = 'DELETE FROM voyage WHERE id = ' . $voyage_id;
+            $delete_etape = 'DELETE FROM etape WHERE voyage_id = ' . $voyage_id;
+            $db->query($delete_voyage);
+            $db->query($delete_etape);
+            echo 'Journey deleted<br/>';
+            $voyage_id = 0;
+        }
+    }
+
 ?>
 <html>
     <head>
@@ -177,7 +216,9 @@
     <body>
 
         <?php
-            etapeSort();
+            if (!etapeSort()) {
+                etapePrint();
+            }
         ?>
 
         <p><br/></p>
@@ -215,6 +256,10 @@
                 <input type="submit" value="Add stop" />
             </fieldset>
         </form>
+
+        <?php
+            PurposeDeleteJourney();
+        ?>
 
         <p><a href="/">Back to main page</a></p>
 

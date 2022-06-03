@@ -20,9 +20,11 @@ First push:
     Core features created.
 
 Second push:
-    Added stops sort by departure/arrival
+    Added stops sort by departure/arrival.
+    If a journey isn't completed, a warning is showed.
+
+Third push:
+    Ability to remove stops and journeys.
 
 Todo:
-    Additionnal features like removing journeys/stops.
     Graphical improvements.
-    Warning when journey not fully completed

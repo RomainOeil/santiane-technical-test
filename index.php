@@ -41,7 +41,6 @@
                $name = $row['name'];
                echo '<form action="etape.php" method="post">';
                echo '<input type="submit" name="name" id="test" value="' . $name . '">';
-               echo '<br/>';
                echo '</form>';
             }
         } catch (PDOException $e) {
