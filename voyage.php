@@ -14,7 +14,7 @@
             global $db;
             $add_voyage = "INSERT INTO voyage (name) VALUES ('$_POST[name]')";
             $db->exec($add_voyage);
-            echo 'Journey added! <br/>';
+            echo 'Travel added! <br/>';
             echo $_POST["name"];
         } catch (PDOException $e) {
             echo "Error :" . $e->getMessage() . "<br/>";
@@ -25,15 +25,18 @@
 ?>
 <html>
     <head>
-        <title>Journey added</title>
+        <title>Travel added</title>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="style.php" media="screen"/>
+    </head>
+
     <body>
+        <div class="etape_added">
+            <?php
+                addVoyage();
 
-        <?php
-            addVoyage();
-
-        ?>
-        <p><a href="/">Back to main page</a></p>
-
+            ?>
+            <p><a href="/">Back to main page</a></p>
+        </div>
     </body>
 </html>

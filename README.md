@@ -26,5 +26,8 @@ Second push:
 Third push:
     Ability to remove stops and journeys.
 
+Fourth push:
+    Graphical improvements
+
 Todo:
-    Graphical improvements.
+    Unit test

@@ -51,7 +51,7 @@
         global $etape_array;
         echo '<form method="post" id="etape_tab" action="etape.php">';
         echo '<table>';
-        echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . ' sorted from first to last stop</caption>';
+        echo '<caption class="table_title">List of stops for ' . $_SESSION['voyage_name'] . ' sorted from first to last stop</caption>';
         echo '<tr>';
         echo '<th>Type of transport</th>';
         echo '<th>Number of the transport</th>';
@@ -70,7 +70,8 @@
             echo '</tr>';
         }
         echo '</table>';
-        echo '<input type="submit" name="delete_selected" value="Delete selected etapes">';
+        echo '<br>';
+        echo '<input type="submit" name="delete_selected" value="Delete selected etapes" class="delete">';
         echo '</form>';
         if (isset($_POST['delete_etape'])) {
             deleteSelectedEtape($_POST['delete_etape']);
@@ -115,7 +116,7 @@
                     $first_etape = $row;
                 } else if (!$is_found && $first_found) {
                     echo 'First stop already found<br/>';
-                    echo 'Please verify that the journey is correct<br/>';
+                    echo 'Please verify that the travel is correct<br/>';
                     return false;
                 }
             }
@@ -158,7 +159,7 @@
         try {
             global $db, $voyage_id;
             if ($voyage_id == 0) {
-                echo 'Journey not found<br/>';
+                echo 'Travel not found<br/>';
                 return;
             }
             $get_etape = 'SELECT * FROM etape WHERE voyage_id = ' . $voyage_id;
@@ -166,12 +167,12 @@
             echo '<caption>List of stops for ' . $_SESSION['voyage_name'] . 'unsorted</caption>';
             echo '<tr>';
             echo '<th>Type of transport</th>';
-            echo '<th>Number of the transport</th>';
+            echo '<th>Transport number</th>';
             echo '<th>Place of departure</th>';
             echo '<th>Place of arrival</th>';
-            echo '<th>Number of the seat</th>';
+            echo '<th>Seat number</th>';
             echo '<th>Gate</th>';
-            echo '<th>Number of the baggage</th>';
+            echo '<th>Baggage number</th>';
             echo '</tr>';
             foreach ($db->query($get_etape) as $row) {
                 echo '<tr>';
@@ -190,11 +191,11 @@
     function purposeDeleteJourney() {
         global $db, $voyage_id;
         echo '<form method="post">';
-        echo '<input type="submit" name="delete_journey" value="Delete journey">';
+        echo '<input type="submit" name="delete_journey" value="Delete travel" class="delete">';
         echo '</form>';
         if (isset($_POST['delete_journey'])) {
             echo '<form method="post">';
-            echo '<input type="submit" name="confirm_delete_journey" value="Confirm delete journey">';
+            echo '<input type="submit" name="confirm_delete_journey" value="Confirm delete travel" class="delete" classe="align">';
             echo '</form>';
         }
         if (isset($_POST['confirm_delete_journey'])){
@@ -202,8 +203,8 @@
             $delete_etape = 'DELETE FROM etape WHERE voyage_id = ' . $voyage_id;
             $db->query($delete_voyage);
             $db->query($delete_etape);
-            echo 'Journey deleted<br/>';
             $voyage_id = 0;
+            header('Location: index.php');
         }
     }
 
@@ -215,53 +216,57 @@
 
     <body>
 
-        <?php
-            if (!etapeSort()) {
-                etapePrint();
-            }
-        ?>
+        <div class="etape_list">
+            <?php
+                if (!etapeSort()) {
+                    etapePrint();
+                }
+            ?>
+        </div>
 
         <p><br/></p>
-        <form method="post" action="etape_added.php">
-            <fieldset>
-                <legend>Add a stop</legend>
-                <p>
-                    <label for="type">Type of transport:</label>
-                    <input type="text" name="type" id="type" required />
-                </p>
-                <p>
-                    <label for="number">Number of the transport:</label>
-                    <input type="text" name="number" id="number" required />
-                </p>
-                <p>
-                    <label for="departure">Place of departure:</label>
-                    <input type="text" name="departure" id="departure" required />
-                </p>
-                <p>
-                    <label for="arrival">Place of arrival:</label>
-                    <input type="text" name="arrival" id="arrival" required />
-                </p>
-                <p>
-                    <label for="seat">Seat (not required):</label>
-                    <input type="text" name="seat" id="seat"/>
-                </p>
-                <p>
-                    <label for="gate">Gate (not required):</label>
-                    <input type="text" name="gate" id="gate" />
-                </p>
-                <p>
-                    <label for="baggage_drop">Baggage drop (not required):</label>
-                    <input type="number" min="0" name="baggage_drop" id="baggage_drop" value="null" />
-                </p>
-                <input type="submit" value="Add stop" />
-            </fieldset>
-        </form>
+        <div class="form">
+            <form method="post" action="etape_added.php" class="add_etape">
+                <fieldset>
+                    <legend>Add a stop</legend>
+                    <p>
+                        <label for="type" class="label_background">Type of transport:</label>
+                        <input type="text" name="type" id="type" class="align" class="required" required />
+                    </p>
+                    <p>
+                        <label for="number" class="label_background">Number of the transport:</label>
+                        <input type="text" name="number" id="number" class="align" class="required" required />
+                    </p>
+                    <p>
+                        <label for="departure" class="label_background">Place of departure:</label>
+                        <input type="text" name="departure" id="departure" class="align" class="required" required />
+                    </p>
+                    <p>
+                        <label for="arrival" class="label_background">Place of arrival:</label>
+                        <input type="text" name="arrival" id="arrival" class="align" class="required" required />
+                    </p>
+                    <p>
+                        <label for="seat" class="label_background">Seat (not required):</label>
+                        <input type="text" name="seat" id="seat" class="align" />
+                    </p>
+                    <p>
+                        <label for="gate" class="label_background">Gate (not required):</label>
+                        <input type="text" name="gate" id="gate" class="align" />
+                    </p>
+                    <p>
+                        <label for="baggage_drop" class="label_background">Baggage drop (not required):</label>
+                        <input type="number" min="0" name="baggage_drop" id="baggage_drop" value="null" class="align" />
+                    </p>
+                    <input type="submit" value="Add stop" />
+                </fieldset>
+            </form>
+        </div>
 
         <?php
             PurposeDeleteJourney();
         ?>
 
-        <p><a href="/">Back to main page</a></p>
+        <p class="link"><a href="/">Back to main page</a></p>
 
     </body>
 </html>

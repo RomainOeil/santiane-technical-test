@@ -52,28 +52,38 @@
 ?>
 <html>
     <head>
-        <title>Main page - Journeys list</title>
+        <title>Main page - Travels list</title>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="style.php" media="screen"/>
     </head>
 
     <body>
 
-        <form method="post" action="voyage.php">
-            <fieldset>
-                <legend>Add a journey</legend>
-                <p>
-                    <label for="name">Name of the journey:</label>
-                    <input type="text" name="name" id="name" required />
-                </p>
-                <input type="submit" value="Add journey" />
-            </fieldset>
-        </form>
+        <div class="form">
+            <form method="post" action="voyage.php">
+                <fieldset>
+                    <legend>Add a travel</legend>
+                    <p>
+                        <label for="name">Name of the travel:</label>
+                        <input type="text" name="name" id="name" class="required" required />
+                    </p>
+                    <input type="submit" value="Add travel" />
+                </fieldset>
+            </form>
+        </div>
 
-        <p><br/>Journeys list:<br/>
-        <?php
-            voyagePrint();
-        ?>
-        </p>
+        <br>
+
+        <div class="journey_list">
+            <fieldset>
+                <legend>Travels list:</legend>
+                <p>
+                    <?php
+                        voyagePrint();
+                    ?>
+                </p>
+            </fieldset>
+        </div>
 
     </body>
 </html>

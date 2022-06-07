@@ -1,5 +1,4 @@
 <?php
-    require __DIR__ . '/etape.php';
     $user = 'root';
     $pass = 'root';
 
@@ -12,7 +11,7 @@
 
     session_start();
 
-/*    function getVoyageIdFromSession() {
+    function getVoyageIdFromSession() {
         try {
             $voyage_id = 0;
             global $db;
@@ -23,7 +22,7 @@
             echo "Error :" . $e->getMessage() . "<br/>";
             die;
         }
-    }*/
+    }
 
     $voyage_id = getVoyageIdFromSession();
 
@@ -127,15 +126,21 @@
 
 ?>
 <html>
+    <head>
+        <link rel="stylesheet" href="style.php" media="screen"/>
+    </head>
+
     <body>
-        <?php
-            $sucess = addEtape();
-            if ($sucess == true) {
-                echo "Stop added for $_SESSION[voyage_name]<br/>";
-            } else {
-                echo "Stop not added<br/>";
-            }
-        ?>
-        <p><a href="/etape.php">Back to stops list</a></p>
+        <div class="etape_added">
+                <?php
+                    $sucess = addEtape();
+                    if ($sucess == true) {
+                        echo "Stop added for $_SESSION[voyage_name]<br/>";
+                    } else {
+                        echo "Stop not added<br/>";
+                    }
+                ?>
+                <p class="link"><a href="/etape.php">Back to stops list</a></p>
+        </div>
     </body>
 </html>
