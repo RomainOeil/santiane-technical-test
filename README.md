@@ -29,5 +29,6 @@ Third push:
 Fourth push:
     Graphical improvements
 
-Todo:
-    Unit test
+Fifth:
+    Added unit test
+    Separeted html code and php functions
