@@ -7,6 +7,8 @@ The main page display the list of journeys available, a form is available to add
 
 Click on the name of a journey redirect the user to a new page were he can see all the stop of the journey and add more.
 The details of the journey (place of departure and arrival, type and numbers of the transport and others) are displayed in a table.
+The last column let the user select the stop he want to delete after clicking on "Delete selected stops".
+In the right bottom corner, a button let the user delete the travel and the stops, on the first input, a second button ask if the user confirm the deletion to avoid accidental input.
 
 The "Seat", "Gate" and "Baggage drop" data aren't mandatory, if not set, they will be NULL, all the others data are required, the form can't be validate without them.
 
