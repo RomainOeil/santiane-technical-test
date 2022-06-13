@@ -24,11 +24,11 @@
                 <fieldset>
                     <legend>Add a stop</legend>
                     <p>
-                        <label for="type" class="label_background">Type of transport:</label>
+                        <label for="type" class="label_background">Transport type:</label>
                         <input type="text" name="type" id="type" class="align" class="required" required />
                     </p>
                     <p>
-                        <label for="number" class="label_background">Number of the transport:</label>
+                        <label for="number" class="label_background">Transport number:</label>
                         <input type="text" name="number" id="number" class="align" class="required" required />
                     </p>
                     <p>
@@ -48,7 +48,7 @@
                         <input type="text" name="gate" id="gate" class="align" />
                     </p>
                     <p>
-                        <label for="baggage_drop" class="label_background">Baggage drop (not required):</label>
+                        <label for="baggage_drop" class="label_background">Bags number (not required):</label>
                         <input type="number" min="0" name="baggage_drop" id="baggage_drop" value="null" class="align" />
                     </p>
                     <input type="submit" value="Add stop" />
