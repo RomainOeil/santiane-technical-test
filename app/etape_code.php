@@ -56,13 +56,13 @@
         echo '<table>';
         echo '<caption class="table_title">List of stops for ' . $_SESSION['voyage_name'] . ' sorted from first to last stop</caption>';
         echo '<tr>';
-        echo '<th>Type of transport</th>';
-        echo '<th>Number of the transport</th>';
+        echo '<th>Transport type</th>';
+        echo '<th>Transport number</th>';
         echo '<th>Place of departure</th>';
         echo '<th>Place of arrival</th>';
-        echo '<th>Number of the seat</th>';
+        echo '<th>Seat number</th>';
         echo '<th>Gate</th>';
-        echo '<th>Number of the baggage</th>';
+        echo '<th>Bags number</th>';
         echo '<th>Delete?</th>';
         echo '</tr>';
         foreach ($etape_array as $etape) {
